@@ -1,0 +1,3 @@
+gdsc_main: "data/GDSC2_fitted_dose_response_27Oct23.xlsx"
+cell_lines: "data/Cell_Lines_Details.xlsx"
+compounds: "data/screened_compounds_rel_8.5.csv"
