@@ -19,13 +19,16 @@ class PreprocessDataset:
         self.gdsc_main_df = gdsc_main_df
         self.cell_lines_df = cell_lines_df
         self.compounds_df = compounds_df
+        self.DROP_COLUMNS = [
+            "AUC",
+            "RMSE",
+            "Z_SCORE"
+        ]
         self.gdsc_preprocessed_df = None
 
     def merge_cell_lines(self, gdsc_df: pd.DataFrame) -> pd.DataFrame:
         """
         Add COSMIC details to the GDSC dataframe.
-        :param gdsc_df: GDSC dataframe
-        :return: pd.DataFrame
         """
         logger.info("Adding COSMIC details to the GDSC dataframe.")
         return pd.merge(
@@ -39,8 +42,6 @@ class PreprocessDataset:
     def merge_compounds(self, gdsc_df: pd.DataFrame) -> pd.DataFrame:
         """
         Add drug details to the GDSC dataframe.
-        :param gdsc_df: pd.DataFrame
-        :return: pd.DataFrame
         """
         logger.info("Adding drug details to the GDSC dataframe.")
         return pd.merge(
@@ -54,11 +55,11 @@ class PreprocessDataset:
     def preprocess(self) -> pd.DataFrame:
         """
         Preprocess and combine data from different datasets.
-        :return: pd.DataFrame
         """
         logger.info("Starting preprocessing...")
         gdsc_df_with_cell_lines = self.merge_cell_lines(self.gdsc_main_df)
         gdsc_df_combined = self.merge_compounds(gdsc_df_with_cell_lines)
+        gdsc_df_combined = gdsc_df_combined.drop(columns=self.DROP_COLUMNS)
         self.gdsc_preprocessed_df = gdsc_df_combined
         logger.info(f"Finished preprocessing. Combined dataset with {self.gdsc_preprocessed_df.shape[1]} features.")
         return gdsc_df_combined
@@ -82,7 +83,6 @@ if __name__ == "__main__":
 
     gdsc_main_df, cell_lines_df, compounds_df = load_datasets(args.yaml_path)
 
-    # Preprocess and save the dataset
     preprocessor = PreprocessDataset(
         gdsc_main_df=gdsc_main_df,
         cell_lines_df=cell_lines_df,

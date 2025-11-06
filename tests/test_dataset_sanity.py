@@ -3,14 +3,20 @@ from core.loader import load_datasets
 DATA_YAML_PATH = "./data.yaml"
 gdsc_main_df, cell_lines_df, compounds_df = load_datasets(DATA_YAML_PATH)
 
-# Check if the details of all the COSMIC_ID in gdsc_main is present in cell_lines
+
 def test_cosmic_details_availability():
+    """
+    Check if the details of all the COSMIC_ID in gdsc_main is present in cell_lines
+    """
     unique_cosmic_ids = set(gdsc_main_df["COSMIC_ID"])
     unique_cosmic_details = set(cell_lines_df["COSMIC identifier"])
     assert len(unique_cosmic_ids.intersection(unique_cosmic_details)) == len(unique_cosmic_ids)
 
-# Check if the details of all the DRUG_ID in gdsc_main is present in compounds
+
 def test_drug_details_availability():
+    """
+    Check if the details of all the DRUG_ID in gdsc_main is present in compounds
+    """
     unique_drug_ids = set(gdsc_main_df["DRUG_ID"])
     unique_drug_details = set(compounds_df["DRUG_ID"])
     assert len(unique_drug_ids.intersection(unique_drug_details)) == len(unique_drug_ids)

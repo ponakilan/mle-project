@@ -8,8 +8,6 @@ warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 def load_datasets(yaml_file_path: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Loads the data using the paths from the yaml file.
-    :param yaml_file_path: Path to the yaml file
-    :return: tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
     """
     with open(yaml_file_path, "r") as data_paths_file:
         data_paths = yaml.load(data_paths_file, Loader=yaml.FullLoader)
