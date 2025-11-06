@@ -1,14 +1,13 @@
 import sys
-import yaml
 import logging
 import argparse
-import warnings
 import pandas as pd
+
+from loader import load_datasets
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(encoding='utf-8', level=logging.DEBUG)
 
-warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 
 class PreprocessDataset:
     def __init__(
@@ -77,18 +76,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Preprocess and combine GDSC details from different datasets."
     )
-    parser.add_argument("--filepath", type=str, required=True)
+    parser.add_argument("--file_path", type=str, required=True)
+    parser.add_argument("--yaml_path", type=str, required=True)
     args = parser.parse_args()
 
-    # Open the dataset paths file
-    with open("data.yaml", "r") as data_paths_file:
-        data_paths = yaml.load(data_paths_file, Loader=yaml.FullLoader)
-
-    # Load the datasets
-    logger.info("Loading data...")
-    gdsc_main_df = pd.read_excel(data_paths["gdsc_main"])
-    cell_lines_df = pd.read_excel(data_paths["cell_lines"])
-    compounds_df = pd.read_csv(data_paths["compounds"])
+    gdsc_main_df, cell_lines_df, compounds_df = load_datasets(args.yaml_path)
 
     # Preprocess and save the dataset
     preprocessor = PreprocessDataset(
@@ -96,4 +88,4 @@ if __name__ == "__main__":
         cell_lines_df=cell_lines_df,
         compounds_df=compounds_df
     )
-    preprocessor.save(args.filepath)
+    preprocessor.save(args.file_path)

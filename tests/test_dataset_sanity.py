@@ -1,17 +1,7 @@
-import yaml
-import warnings
-import pandas as pd
+from core.loader import load_datasets
 
-warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
-
-# Open the dataset paths file
-with open("data.yaml", "r") as data_paths_file:
-    data_paths = yaml.load(data_paths_file, Loader=yaml.FullLoader)
-
-# Load the datasets
-gdsc_main_df = pd.read_excel(data_paths["gdsc_main"])
-cell_lines_df = pd.read_excel(data_paths["cell_lines"])
-compounds_df = pd.read_csv(data_paths["compounds"])
+DATA_YAML_PATH = "./data.yaml"
+gdsc_main_df, cell_lines_df, compounds_df = load_datasets(DATA_YAML_PATH)
 
 # Check if the details of all the COSMIC_ID in gdsc_main is present in cell_lines
 def test_cosmic_details_availability():
