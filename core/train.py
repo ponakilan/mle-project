@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     models = {
         "linear_regression": LinearRegression(),
-        "svr": SVR(kernel="linear", C=1.0),
+        "svr": SVR(kernel="rbf", C=1.0),
         "radom_forest": RandomForestRegressor()
     }
 
