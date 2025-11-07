@@ -12,7 +12,7 @@ def train_model(
 ) -> LinearRegression | RandomForestRegressor | SVR:
 
     model_obj.fit(independent_vars, dependent_var)
-    print(f"Trained model: {model_obj.__class__.__name__} \nScore: {model_obj.score(independent_vars, dependent_var)}\n\n")
+    print(f"Trained model: {model_obj.__class__.__name__} \nScore: {model_obj.score(independent_vars, dependent_var)}\n")
     return model_obj
 
 

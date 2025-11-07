@@ -91,7 +91,9 @@ class PreprocessDataset:
         gdsc_df_combined = self.merge_compounds(gdsc_df_with_cell_lines)
         gdsc_df_combined = gdsc_df_combined.drop(columns=self.DROP_COLUMNS)
         gdsc_df_combined = gdsc_df_combined.dropna()
-        gdsc_df_combined = self.encode_categorical_features(gdsc_df_combined, )
+        gdsc_df_combined = self.encode_categorical_features(gdsc_df_combined)
+
+        gdsc_df_combined = gdsc_df_combined.iloc[:2000]
 
         self.gdsc_preprocessed_df = gdsc_df_combined
         logger.info(f"Finished preprocessing. Combined dataset is of shape {gdsc_df_combined.shape}.")
