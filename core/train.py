@@ -1,6 +1,7 @@
 import pickle
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
+import xgboost as xgb
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVR
@@ -52,7 +53,14 @@ if __name__ == "__main__":
     models = {
         "linear_regression": LinearRegression(),
         "svr": SVR(kernel="rbf", C=1.0, epsilon=0.5, gamma=0.001),
-        "random_forest": RandomForestRegressor()
+        "random_forest": RandomForestRegressor(),
+        "xgb": xgb.XGBRegressor(
+            objective='reg:squarederror',
+            n_estimators=100,
+            learning_rate=0.1,
+            max_depth=3,
+            random_state=42
+        )
     }
 
     for model in models:

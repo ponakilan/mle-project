@@ -3,7 +3,7 @@ import sys
 import logging
 import argparse
 import pandas as pd
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import LabelEncoder
 
 from loader import load_datasets
 
@@ -18,7 +18,6 @@ class PreprocessDataset:
             cell_lines_df: pd.DataFrame,
             compounds_df: pd.DataFrame,
             encoders_save_path: str,
-            scalers_save_path: str,
             num_records: int,
     ):
         self.gdsc_main_df = gdsc_main_df
@@ -40,13 +39,8 @@ class PreprocessDataset:
             "Screen Medium",
             "Growth Properties"
         ]
-        self.NORMALIZE_COLUMNS = [
-            "Gene Expression",
-            "Copy Number Alterations (CNA)",
-            "Methylation"
-        ]
+        self.NORMALIZE_COLUMNS = []
         self.encoders_save_path = encoders_save_path
-        self.scalers_save_path = scalers_save_path
         self.num_records = num_records
         self.gdsc_preprocessed_df = None
 
@@ -95,19 +89,6 @@ class PreprocessDataset:
         logger.info(f"Categorical features saved to '{self.encoders_save_path}'.")
         return gdsc_df
 
-    def normalize_features(self, gdsc_df: pd.DataFrame) -> pd.DataFrame:
-        scalers = dict()
-        logger.info("Normalizing categorical features")
-        for col in self.NORMALIZE_COLUMNS:
-            scaler = StandardScaler().fit(gdsc_df[col].values.reshape(-1, 1))
-            scalers[col] = scaler
-            gdsc_df[col] = scaler.transform(gdsc_df[col].values.reshape(-1, 1))
-
-        with open(self.scalers_save_path, "wb") as f:
-            pickle.dump(scalers, f)
-
-        return gdsc_df
-
     def preprocess(self) -> pd.DataFrame:
         """
         Preprocess and combine data from different datasets.
@@ -118,7 +99,6 @@ class PreprocessDataset:
         gdsc_df_combined = gdsc_df_combined.loc[:, self.KEEP_COLUMNS]
         gdsc_df_combined = gdsc_df_combined.dropna()
         gdsc_df_combined = self.encode_categorical_features(gdsc_df_combined)
-        gdsc_df_combined = self.normalize_features(gdsc_df_combined)
 
         # Shuffle the dataset and take only the required rows
         gdsc_df_combined = gdsc_df_combined.sample(frac=1).reset_index(drop=True)
@@ -144,7 +124,6 @@ if __name__ == "__main__":
     parser.add_argument("--file_path", type=str, required=True)
     parser.add_argument("--yaml_path", type=str, required=True)
     parser.add_argument("--encoders_path", type=str, required=True)
-    parser.add_argument("--scalers_path", type=str, required=True)
     parser.add_argument("--num_records", type=int, required=True)
     args = parser.parse_args()
 
@@ -155,7 +134,6 @@ if __name__ == "__main__":
         cell_lines_df=cell_lines_df,
         compounds_df=compounds_df,
         encoders_save_path=args.encoders_path,
-        scalers_save_path=args.scalers_path,
         num_records=args.num_records
     )
     preprocessor.save(args.file_path)
