@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.svm import SVR
 from sklearn.model_selection import GridSearchCV
+from sklearn.neural_network import MLPRegressor
 
 
 def train_model(
@@ -59,6 +60,22 @@ if __name__ == "__main__":
             n_estimators=100,
             learning_rate=0.1,
             max_depth=3,
+            random_state=42
+        ),
+        # "lgbm": LGBMRegressor(
+        #     n_estimators=1000,
+        #     learning_rate=0.03,
+        #     max_depth=-1,
+        #     subsample=0.8,
+        #     colsample_bytree=0.8,
+        #     random_state=42
+        # ),
+        "mlp": MLPRegressor(
+            hidden_layer_sizes=(256, 128, 64),
+            activation='relu',
+            solver='adam',
+            learning_rate_init=0.001,
+            max_iter=200,
             random_state=42
         )
     }
